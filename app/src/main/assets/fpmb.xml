@@ -1,0 +1,505 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- type =1：可打印字符串  type=2:打印对应的ID值   type=3:打印十六进制数据  type=4:执行对应的类方法 -->
+<body>
+	<fpmb InvoiceName="通用">
+		<!--<InvoiceName>
+			通用
+		</InvoiceName>-->
+		<!-- 发票名称 -->
+		<!--<FristOSetNh type="3">
+			1b 7c 00 06  00  45  BA  22  32  01  00
+		</FristOSetNh>-->
+		<!-- 初次装纸偏移量高位 -->
+		<!--<FristOSetNl type="3">
+			1b  7c  00  06  00  45  BA  22  32  02  00
+		</FristOSetNl>-->
+		<!-- 初次装纸偏移量低位 -->
+		<!--<BlackLabel type="3">
+			1b  7c  00  07  00  48  B7  24  31  02  08  00
+		</BlackLabel>-->
+		<!-- 开关黑标 -->
+		<TitleData>
+			<!-- 头部打印内容 -->
+			<Data type="3">
+				1b  4a  8d
+			</Data>
+			<!-- 定位初始打印位置 -->
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				0
+			</Data>
+			<!-- 机打号码 -->
+			<Data type="3">
+				1b  24  41  01
+			</Data>
+			<Data type="2">
+				1
+			</Data>
+			<!-- 机器编码 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				2
+			</Data>
+			<!-- 销售方名称 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				3
+			</Data>
+			<!-- 销售方税号 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				4
+			</Data>
+			<!-- 开票日期 -->
+			<Data type="3">
+				1b  24  86  00
+			</Data>
+			<Data type="2">
+				5
+			</Data>
+			<!-- 收款员 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				6
+			</Data>
+			<!-- 购买方名称 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				7
+			</Data>
+			<!-- 购买方税号 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				0a  0d
+			</Data>
+		</TitleData>
+		<Proformat max="9">
+			<!-- 项目打印顺序 -->
+			<Data type="4">
+				getXm
+			</Data>
+			<!-- 项目 -->
+			<Data type="3">
+				1b  24  86  00
+			</Data>
+			<Data type="4">
+				getDj
+			</Data>
+			<!-- 单价 -->
+			<Data type="3">
+				1b  24  E4  00
+			</Data>
+			<Data type="4">
+				getSl
+			</Data>
+			<!-- 数量 -->
+			<Data type="3">
+				1b  24  37  01
+			</Data>
+			<Data type="4">
+				getJe
+			</Data>
+			<!-- 金额 -->
+		</Proformat>
+		<BottomData>
+			<!-- 底部打印内容 -->
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				8
+			</Data>
+			<!-- 合计金额 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				9
+			</Data>
+			<!-- 合计税额 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				10
+			</Data>
+			<!-- 价税合计 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				14
+			</Data>
+			<!-- 价税合计（大写） -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				11
+			</Data>
+			<!-- 校验码 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1d  0c
+			</Data>
+			<!-- 定位黑标处 -->
+			<Data type="3">
+				1b  4a  71
+			</Data>
+			<!-- 走到撕纸位置 -->
+		</BottomData>
+	</fpmb>
+	<fpmb InvoiceName="广西">
+		<!--<InvoiceName>
+			广西
+		</InvoiceName>-->
+		<!-- 发票名称 -->
+		<!--<FristOSetNh type="3">
+			1b  7c  00  06  00  45  BA  22  32  01  00
+		</FristOSetNh>-->
+		<!-- 初次装纸偏移量高位 -->
+		<!--<FristOSetNl type="3">
+			1b  7c  00  06  00  45  BA  22  32  02  00
+		</FristOSetNl>-->
+		<!-- 初次装纸偏移量低位 -->
+		<!--<BlackLabel type="3">
+			1b  7c  00  07  00  48  B7  24  31  02  08  00
+		</BlackLabel>-->
+		<!-- 开关黑标 -->
+		<TitleData>
+			<!-- 头部打印内容 -->
+			<Data type="3">
+				1b  4a  90
+			</Data>
+			<!-- 定位初始打印位置 -->
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				4
+			</Data>
+			<!-- 开票日期 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				6
+			</Data>
+			<!-- 付款单位 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				0a  0d
+			</Data>
+		</TitleData>
+		<Proformat max="11">
+			<!-- 项目打印顺序 -->
+			<Data type="4">
+				getXm
+			</Data>
+			<!-- 项目 -->
+			<Data type="3">
+				1b  24  86  00
+			</Data>
+			<Data type="4">
+				getSl
+			</Data>
+			<!-- 数量 -->
+			<Data type="3">
+				1b  24  E4  00
+			</Data>
+			<Data type="4">
+				getDj
+			</Data>
+			<!-- 单价 -->
+			<Data type="3">
+				1b  24  37  01
+			</Data>
+			<Data type="4">
+				getJe
+			</Data>
+			<!-- 金额 -->
+		</Proformat>
+		<BottomData>
+			<!-- 底部打印内容 -->
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				8
+			</Data>
+			<!-- 小写金额 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				13
+			</Data>
+			<!-- 大写金额 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				2
+			</Data>
+			<!-- 收款单位 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				12
+			</Data>
+			<!-- 税务证号 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="3">
+				1b  24  55  00
+			</Data>
+			<Data type="2">
+				5
+			</Data>
+			<!-- 收款员 -->
+			<Data type="3">
+				1d  0c
+			</Data>
+			<!-- 定位黑标处 -->
+			<Data type="3">
+				1b  4a  00
+			</Data>
+			<!-- 走到撕纸位置 -->
+		</BottomData>
+	</fpmb>
+	<fpmb InvoiceName="江西">
+		<!--<InvoiceName>
+			江西
+		</InvoiceName>-->
+		<!-- 发票名称 -->
+		<!--<FristOSetNh type="3">
+			1b  7c  00  06  00  45  BA  22  32  01  00
+		</FristOSetNh>-->
+		<!-- 初次装纸偏移量高位 -->
+		<!--<FristOSetNl type="3">
+			1b  7c  00  06  00  45  BA  22  32  02  00
+		</FristOSetNl>-->
+		<!-- 初次装纸偏移量低位 -->
+		<!--<BlackLabel type="3">
+			1b  7c  00  07  00  48  B7  24  31  02  08  01
+		</BlackLabel>-->
+		<!-- 开关黑标 -->
+		<TitleData>
+			<!-- 头部打印内容 -->
+			<Data type="3">
+				1b  43  00  05
+			</Data>
+			<!-- 设置纸长 -->
+			<Data type="3">
+				1b  4a  00
+			</Data>
+			<!-- 定位初始打印位置 -->
+			<Data type="1">
+				客户名称：
+			</Data>
+			<Data type="2">
+				6
+			</Data>
+			<!-- 购买方名称 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="1">
+				收款单位：
+			</Data>
+			<Data type="2">
+				2
+			</Data>
+			<!-- 销售方名称 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="1">
+				机打号码：
+			</Data>
+			<Data type="2">
+				0
+			</Data>
+			<!-- 机打号码 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="1">
+				开票日期：
+			</Data>
+			<Data type="2">
+				4
+			</Data>
+			<!-- 开票日期 -->
+			<Data type="1">
+				收款员：
+			</Data>
+			<Data type="2">
+				5
+			</Data>
+			<!-- 收款员 -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="1">
+				项目
+			</Data>
+			<Data type="3">
+				1b  24  86  00
+			</Data>
+			<Data type="1">
+				单价
+			</Data>
+			<Data type="3">
+				1b  24  E4  00
+			</Data>
+			<Data type="1">
+				数量
+			</Data>
+			<Data type="3">
+				1b  24  37  01
+			</Data>
+			<Data type="1">
+				金额（元）
+			</Data>
+			<Data type="3">
+				0a  0d
+			</Data>
+		</TitleData>
+		<Proformat max="4">
+			<!-- 项目打印顺序 -->
+			<Data type="4">
+				getXm
+			</Data>
+			<!-- 项目 -->
+			<Data type="3">
+				1b  24  86  00
+			</Data>
+			<Data type="4">
+				getDj
+			</Data>
+			<!-- 单价 -->
+			<Data type="3">
+				1b  24  E4  00
+			</Data>
+			<Data type="4">
+				getSl
+			</Data>
+			<!-- 数量 -->
+			<Data type="3">
+				1b  24  37  01
+			</Data>
+			<Data type="4">
+				getJe
+			</Data>
+			<!-- 金额（元） -->
+		</Proformat>
+		<BottomData>
+			<!-- 底部打印内容 -->
+			<Data type="1">
+				价税合计（小写）：
+			</Data>
+			<Data type="3">
+				1b  24  5a  00
+			</Data>
+			<Data type="2">
+				10
+			</Data>
+			<!-- 价税合计（小写） -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="1">
+				价税合计（大写）：
+			</Data>
+			<Data type="3">
+				1b  24  5a  00
+			</Data>
+			<Data type="2">
+				14
+			</Data>
+			<!-- 价税合计（大写） -->
+			<Data type="3">
+				0a  0d
+			</Data>
+			<Data type="1">
+				校验码：
+			</Data>
+			<Data type="3">
+				1b  24  5a  00
+			</Data>
+			<Data type="2">
+				11
+			</Data>
+			<!-- 税控码 -->
+			<Data type="3">
+				0c
+			</Data>
+		</BottomData>
+	</fpmb>
+</body>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="gbk"?>
+<business id="spbm" comment="税收编码请求" version="1.0">
+    <body>
+        <returnCode>00</returnCode>
+        <returnMessage>成功</returnMessage>
+        <COUNT>4148</COUNT>
+        <BBH>10.0</BBH>
+        <MWJY>C9C91185779ED9AAE848830C755B3FC6</MWJY>
+        <QYSJ>2016-05-01</QYSJ>
+        <GDQJZSJ>2017-03-30</GDQJZSJ>
+        <BMXX>
+            <BB>1.0</BB>
+            <QYSJ>2016-04-28</QYSJ>
+            <GDQJZSJ>2016-04-28</GDQJZSJ>
+            <SPBM>1000000000000000000</SPBM>
+            <SPMC>货物</SPMC><SM><![CDATA[]]></SM>
+            <ZZSSL></ZZSSL>
+            <GJZ><![CDATA[]]></GJZ>
+            <HZX><![CDATA[Y]]></HZX>
+            <KYZT>Y</KYZT>
+            <ZZSTSGL><![CDATA[]]></ZZSTSGL>
+            <ZZSZCYJ><![CDATA[]]></ZZSZCYJ>
+            <ZZSTSNRDM><![CDATA[]]></ZZSTSNRDM>
+            <XFSGL><![CDATA[]]></XFSGL>
+            <XFSZCYJ><![CDATA[]]></XFSZCYJ>
+            <XFSTSNRDM><![CDATA[]]></XFSTSNRDM>
+            <TJJBM><![CDATA[]]></TJJBM>
+            <HGJCKSPPM><![CDATA[]]></HGJCKSPPM>
+            <PID><![CDATA[0]]></PID>
+            <GXSJ><![CDATA[2016-04-28 23:02:04]]></GXSJ>
+        </BMXX>
+        <YHZC>
+            <ZZSYHZC>
+                <YHZCMC><![CDATA[超税负12%即征即退]]></YHZCMC>
+                <SL></SL>
+            </ZZSYHZC>
+            <ZZSYHZC>
+                <YHZCMC><![CDATA[超税负8%即征即退]]></YHZCMC>
+                <SL></SL>
+            </ZZSYHZC>
+            <ZZSYHZC>
+                <YHZCMC><![CDATA[按5%简易征收减按1.5%计征]]></YHZCMC>
+                <SL>1.5%_5%</SL>
+            </ZZSYHZC>
+            <ZZSYHZC>
+                <YHZCMC><![CDATA[按5%简易征收]]></YHZCMC><SL>5%</SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[按3%简易征收]]></YHZCMC><SL>3%</SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[不征税]]></YHZCMC><SL>0%</SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[免税]]></YHZCMC><SL>0%</SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[先征后退]]></YHZCMC><SL></SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[100%先征后退]]></YHZCMC><SL></SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[50%先征后退]]></YHZCMC><SL></SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[简易征收]]></YHZCMC><SL>5%、4%、3%</SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[即征即退30%]]></YHZCMC><SL></SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[即征即退50%]]></YHZCMC><SL></SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[即征即退70%]]></YHZCMC><SL></SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[即征即退100%]]></YHZCMC><SL></SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[超税负3%即征即退]]></YHZCMC><SL></SL></ZZSYHZC><ZZSYHZC><YHZCMC><![CDATA[稀土产品]]></YHZCMC><SL></SL></ZZSYHZC></YHZC></body></business>
