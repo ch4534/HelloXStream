@@ -21,9 +21,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 /**
  * Created by admin on 2016/6/15.
  */
-public class FpbmParse {
+public class FpmbParse {
+
     /**
      * @brief 通过模板获取打印数据
+     * @param context Context对象，用于读取Assets目录下的内容
      * @param area 地区
      * @param contents 打印字符串内容
      * @param listSfmx 打印项目
