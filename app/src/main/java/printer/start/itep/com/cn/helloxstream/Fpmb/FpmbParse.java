@@ -31,7 +31,7 @@ public class FpmbParse {
      * @param listSfmx 打印项目
      * @return 返回可打印字符串内容
      */
-    static public byte[] GetPrinterData(Context context, String area, String[] contents, List<Object> listSfmx){
+    static public <T> byte[] GetPrinterData(Context context, String area, String[] contents, List<T> listSfmx){
         byte[] printData = null;
 
         try{
@@ -138,7 +138,7 @@ public class FpmbParse {
      * @param listSfmx 打印项目链表
      * @return 返回可打印字节链表
      */
-    static public List<Byte> ParseFPMB(NodeList nodeList, String[] contents, List<Object> listSfmx){
+    static public <T> List<Byte> ParseFPMB(NodeList nodeList, String[] contents, List<T> listSfmx){
         List<Byte> printData = new ArrayList<>();
         Object object = null;
         try {

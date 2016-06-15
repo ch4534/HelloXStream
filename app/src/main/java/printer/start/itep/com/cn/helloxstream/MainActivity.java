@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                     contents[i] = "这是测试内容";
                 }
 
-                List<Object> list = new ArrayList<>();
+                List<Sfmx> list = new ArrayList<>();
                 Sfmx sfmx = new Sfmx();
                 sfmx.setDj("11");
                 sfmx.setXm("这是测试。Test,这是测试,这是测试。Test,这是测试");
