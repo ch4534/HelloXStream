@@ -155,10 +155,14 @@ public class FpmbParse {
                     if (type != null) {
                         //去除制表符以及空格
                         String value = child.getFirstChild().getNodeValue().replaceAll("\r|\n|\t", "");
-                        ;
 
-                        //使用通用解析函数进行当前结点的解析
-                        ParseType(Integer.parseInt(type.getNodeValue()), value, contents, object, printData);
+                        try {
+                            //使用通用解析函数进行当前结点的解析
+                            ParseType(Integer.parseInt(type.getNodeValue()), value, contents, object, printData);
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
 
                         continue;
 //                        switch (Integer.parseInt(type.getNodeValue())) {
