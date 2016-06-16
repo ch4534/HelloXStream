@@ -23,20 +23,43 @@ import javax.xml.parsers.DocumentBuilderFactory;
  */
 public class FpmbParse {
 
+    private static FpmbParse sFpmbParse = null;
+    private Context mContext;
+
+    /**
+     * @brief 私有化构造函数
+     * @param context 传入Context对象
+     */
+    private FpmbParse(Context context){
+        mContext = context.getApplicationContext();
+    }
+
+    /**
+     * @brief 获取FpmbParse对象
+     * @param context 传入Context对象
+     * @return 返回Fpmb实例
+     */
+    public static FpmbParse getInstance(Context context){
+        if (sFpmbParse == null){
+            sFpmbParse = new FpmbParse(context);
+        }
+
+        return sFpmbParse;
+    }
+
     /**
      * @brief 通过模板获取打印数据
-     * @param context Context对象，用于读取Assets目录下的内容
      * @param area 地区
      * @param contents 打印字符串内容
      * @param listSfmx 打印项目
      * @param selectType 指定需要获取的节点类型，可空
      * @return 返回可打印字符串内容
      */
-    static public <T> byte[] GetPrinterData(Context context, String area, String[] contents, List<T> listSfmx, String... selectType){
+     public <T> byte[] GetPrinterData(String area, String[] contents, List<T> listSfmx, String... selectType){
         byte[] printData = null;
 
         try{
-            AssetManager am = context.getAssets();
+            AssetManager am = mContext.getAssets();
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             //解析XML模板内容
@@ -89,14 +112,13 @@ public class FpmbParse {
 
     /**
      * 获取可以打印的最大项目行数
-     * @param context
      * @param area
      * @return
      */
-    public static int GetMaxLine(Context context, String area){
+    public  int GetMaxLine(String area){
         int maxValue = -1;
         try{
-            AssetManager am = context.getAssets();
+            AssetManager am = mContext.getAssets();
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             //解析XML模板内容
@@ -134,13 +156,12 @@ public class FpmbParse {
 
     /**
      * 获取可以打印的最大项目行数
-     * @param context
      * @return
      */
-    public static List<String> GetAllArea(Context context){
+    public  List<String> GetAllArea(){
         List<String> areas = new ArrayList<String>();
         try{
-            AssetManager am = context.getAssets();
+            AssetManager am = mContext.getAssets();
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             //解析XML模板内容
@@ -170,11 +191,60 @@ public class FpmbParse {
     }
 
     /**
+     * @brief 获取当前可打印的条目数
+     * @param area 地区
+     * @param listSfmx 需要打印的条目，在函数返回的时候，里面还剩余列表项表示下一次打印的项目
+     * @param <T>
+     * @return 返回当前可打印的条目数
+     */
+    public <T> List<T> GetPrintTm(String area, List<T> listSfmx){
+        List<T> printTM = new ArrayList<T>();
+
+        try{
+            AssetManager am = mContext.getAssets();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            //解析XML模板内容
+            Document document = builder.parse(am.open("fpmb.xml"));
+            Element rootElement = document.getDocumentElement();
+            //获取根节点内容
+            NodeList items = rootElement.getElementsByTagName("fpmb");
+            for (int i = 0; i < items.getLength(); ++i){
+                Node fpmb = items.item(i);
+
+                if (fpmb.hasAttributes()){
+                    NamedNodeMap attribute = fpmb.getAttributes();
+                    //获取地区名字
+                    Node invoice = attribute.getNamedItem("InvoiceName");
+                    if (invoice != null){
+                        //寻找相应地区的模板
+                        if (invoice.getNodeValue().equals(area)){
+                            //获取子节点
+                            NodeList childs = fpmb.getChildNodes();
+
+                            //解析模板获取返回可打印字节链表
+                            if (listSfmx.size() > 0) {
+                                printTM.addAll(ParseFPMB(childs, listSfmx));
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return printTM;
+    }
+
+    /**
      * @brief 解析对应发票模板
      * @param nodeList 发票模板的节点链表
      * @return 返回可打印字节链表
      */
-    static private int ParseFPMB(NodeList nodeList){
+     private int ParseFPMB(NodeList nodeList){
         int maxValue = -1;
         try {
             //从链表的第一个节点开始解析
@@ -214,7 +284,7 @@ public class FpmbParse {
     }
 
 
-    static protected void ParseType(int type, String XmlValue, String[] contents, Object object, List<Byte> printData) throws Exception {
+     protected void ParseType(int type, String XmlValue, String[] contents, Object object, List<Byte> printData) throws Exception {
         XmlValue = XmlValue.replaceAll("\r|\n|\t", "");
         switch (type) {
             case 1:{
@@ -271,7 +341,7 @@ public class FpmbParse {
      * @param listSfmx 打印项目链表
      * @return 返回可打印字节链表
      */
-    static private <T> List<Byte> ParseFPMB(NodeList nodeList, String[] contents, List<T> listSfmx, String... selectType){
+     private <T> List<Byte> ParseFPMB(NodeList nodeList, String[] contents, List<T> listSfmx, String... selectType){
         List<Byte> printData = new ArrayList<Byte>();
         Object object = null;
         try {
@@ -557,13 +627,202 @@ public class FpmbParse {
     }
 
     /**
+     * @brief 解析对应发票模板
+     * @param nodeList 发票模板的节点链表
+     * @param listSfmx 打印项目链表
+     * @return 返回可打印字节链表
+     */
+    private <T> List<T> ParseFPMB(NodeList nodeList, List<T> listSfmx){
+        List<T> printData = new ArrayList<T>();
+        Object object = null;
+        try {
+            //从链表的第一个节点开始解析
+            for (int i = 0; i < nodeList.getLength(); ++i) {
+                //获取第一个节点（获取的节点并非一定是第一个有效节点，注释节点也会被获取）
+                Node child = nodeList.item(i);
+                //判断当前结点是否有属性
+                if (child.hasAttributes()) {
+                    NamedNodeMap attributes = child.getAttributes();
+
+                    //判断是否有属性MAX
+                    Node max = attributes.getNamedItem("max");
+                    if (max != null) {
+                        //获取具备max属性节点的所有子节点
+                        NodeList subChilds = child.getChildNodes();
+
+                        //获取max属性的值并转换为Int类型
+                        int maxValue = Integer.parseInt(max.getNodeValue().trim());
+
+                        //循环判断，条件是不得超过预设值的最大值以及可打印链表的最大尺寸
+                        int enter = 0;
+                        int j = 0;
+                        boolean bLoop = true;
+                        for (; enter < maxValue && j < listSfmx.size() && bLoop; ++j) {
+                            //获取第一个可打印链表的对象
+                            object = listSfmx.get(j);
+
+                            //声明存储当前可打印项目行的Pair链表
+                            //Pair first:表示打印的内容类型
+                            //Pair secong:表示打印的内容
+                            List<Pair<Integer, String>> printString = new ArrayList<Pair<Integer, String>>();
+                            //开始循环获取项目模板
+                            for (int m = 0; m < subChilds.getLength(); ++m) {
+                                //获取当前结点
+                                Node subChild = subChilds.item(m);
+                                //判断是否具备属性
+                                if (subChild.hasAttributes()) {
+                                    NamedNodeMap subAttributes = subChild.getAttributes();
+                                    //获取type属性，并清楚制表符以及空格换行符
+                                    Node subType = subAttributes.getNamedItem("type");
+                                    String value = subChild.getFirstChild().getNodeValue().replaceAll("\r|\n|\t", "");
+
+                                    //判断是否具备type属性
+                                    if (subType != null) {
+//                                        ParseType(Integer.parseInt(subType.getNodeValue()), value, contents, object, printData);
+                                                switch (Integer.parseInt(subType.getNodeValue())) {
+                                                    //如果是类型3，当前的模板节点是打印指令，存储在printString中
+                                                    case 3: {
+                                                        printString.add(new Pair<Integer, String>(3, value));
+                                                    }
+                                                    break;
+
+                                                    //如果是类型4，表示当前的模板节点是从object对应方法中获取可打印数据
+                                                    case 4: {
+                                                        //调用相应的方法获取可打印结果
+                                                        Object result = callMethod(value, object, null);
+                                                        //如果获取的结果不为空并且是字符串将其存储在printString中
+                                                        if (result != null && result instanceof String) {
+                                                            printString.add(new Pair<Integer, String>(4, (String) result));
+                                                        }
+                                                    }
+                                                    break;
+                                                }
+                                                break;
+
+
+                                    }
+                                }
+                            }
+
+                            //设置当前可打印行是否完成标识并初始化为false
+                            boolean bcomplete = false;
+                            int currentSize = printData.size();
+                            int currentEnter = enter;
+                            do {
+//                                String regex = "[\u4e00-\u9fa5]";
+//                                Pattern pattern = Pattern.compile(regex);
+
+                                bcomplete = false;
+
+                                //开始循环提取printString中的内容
+                                for (int m = 0; m < printString.size(); ++m) {
+                                    Pair<Integer, String> pair = printString.get(m);
+
+                                    //从pair first中判断当前的类型
+                                    switch (pair.first) {
+                                        case 4: {
+                                            //将可打印内容存储在content中
+                                            String content = pair.second;
+                                            //声明一个新的StringBuilder类型，并初始化为""
+                                            StringBuilder newContent = new StringBuilder("");
+                                            //声明一个变量k，浮点类型，用来存储当前是否超过7个中文字符（应为以办法处理）
+                                            float k = 0.0f;
+                                            //声明一个变量n，整数类型，用来存储当前循环提取第几个字符
+                                            int n = 0;
+                                            for (; n < pair.second.length(); ++n) {
+                                                //获取当前第n个字符
+                                                String aWord = content.substring(n, n + 1);
+                                                newContent.append(aWord);
+//
+                                                if (aWord.getBytes().length > 1) {
+                                                    k += 1;
+                                                } else {
+                                                    k += 0.5;
+                                                }
+
+                                                if (k >= 7.0f) {
+
+                                                    if (k > 7.0f) {
+                                                        newContent = newContent.delete(newContent.length() - 1, newContent.length());
+                                                        --n;
+                                                    }
+
+                                                    break;
+                                                }
+                                            }
+
+                                            //如果content长度大于N，表示当前还有字符串剩余，那么截取剩下的字符串，将其在当前位置重新存储起来
+                                            if (content.length() > n) {
+                                                printString.remove(pair);
+                                                printString.add(m, new Pair<Integer, String>(4, pair.second.substring(n + 1)));
+                                            }
+                                            //否则表示字符串已经提取完毕，那么移除当前的可打印节点
+                                            else {
+                                                printString.remove(pair);
+                                                --m;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+
+                                ++enter;
+
+                                //判断是否还剩余类型4，如果还存在表示还剩余可打印内容，需要再次循环截取
+                                for (Pair<Integer, String> pair : printString) {
+                                    if (pair.first == 4) {
+                                        bcomplete = true;
+                                        if ((maxValue - enter) <= 0){
+                                            for (int rmindex = currentSize, rmCount = printData.size() - currentSize, count = 0; count < rmCount; ++count){
+                                                printData.remove(currentSize);
+                                            }
+
+                                            enter = currentEnter;
+                                            --j;
+                                            bcomplete = false;
+                                            bLoop = false;
+                                        }
+
+                                        break;
+                                    }
+                                }
+
+                            } while (bcomplete);
+                        }
+
+                        int count = j;
+                        while ((count--) > 0) {
+                            printData.add(listSfmx.get(0));
+                            listSfmx.remove(0);
+                        }
+
+                        //继续提取下一个节点
+                        continue;
+                    }
+                }
+
+                //如果存在节点不符合上面两个定律，并且存在子节点，而且子节点的长度还大于0，则进行回掉方法
+                if (child.getChildNodes() != null && child.getChildNodes().getLength() > 0) {
+                    printData.addAll(ParseFPMB(child.getChildNodes(), listSfmx));
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        //返回可打印聊表
+        return printData;
+    }
+
+    /**
      * @brief 使用反射方法调用对象的成员函数
      * @param methodName 成员函数方法名称
      * @param o 需要被调用成员函数的对象
      * @param params 参数
      * @return 返回成员函数返回结果，返回null表示调用失败或者没有返回值，否则返回非null
      */
-    static public Object callMethod(String methodName, Object o, Object[] params){
+     private Object callMethod(String methodName, Object o, Object[] params){
         Class[] c = null;
         Object result = null;
         if (params != null){

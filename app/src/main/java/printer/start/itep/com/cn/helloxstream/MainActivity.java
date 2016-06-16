@@ -89,7 +89,45 @@ public class MainActivity extends AppCompatActivity {
 
                 list.add(sfmx);
 
-                byte[] printData = FpmbParse.GetPrinterData(MainActivity.this, "通用", contents, list);
+                byte[] printData = FpmbParse.getInstance(MainActivity.this).GetPrinterData("通用", contents, list);
+
+                list = new ArrayList<>();
+                for (int i = 0; i < 4; ++i){
+                    Sfmx sfmx1 = new Sfmx();
+                    sfmx1.setDj("11");
+                    sfmx1.setXm("这是测试。");
+                    sfmx1.setJe("22");
+                    sfmx1.setSl("33");
+
+                    list.add(sfmx1);
+                }
+
+                sfmx = new Sfmx();
+                sfmx.setDj("11");
+                sfmx.setXm("这是测试。Test,这是测试,这是测试。Test,这是测试");
+                sfmx.setJe("22");
+                sfmx.setSl("33");
+
+                list.add(sfmx);
+
+                for (int i = 0; i < 7; ++i){
+                    Sfmx sfmx1 = new Sfmx();
+                    sfmx1.setDj("11");
+                    sfmx1.setXm("这是测试。");
+                    sfmx1.setJe("22");
+                    sfmx1.setSl("33");
+
+                    list.add(sfmx1);
+                }
+
+                sfmx = new Sfmx();
+                sfmx.setDj("11");
+                sfmx.setXm("这是测试。Test,这是测试,这是测试。Test,这是测试");
+                sfmx.setJe("22");
+                sfmx.setSl("33");
+
+                list.add(sfmx);
+                List<Sfmx> result = FpmbParse.getInstance(MainActivity.this).GetPrintTm("通用", list);
                 File file = new File("/storage/sdcard0/printData.prn");
                 try {
                     OutputStream outputStream = new FileOutputStream(file);
