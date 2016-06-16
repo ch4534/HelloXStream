@@ -29,9 +29,10 @@ public class FpmbParse {
      * @param area 地区
      * @param contents 打印字符串内容
      * @param listSfmx 打印项目
+     * @param selectType 指定需要获取的节点类型，可空
      * @return 返回可打印字符串内容
      */
-    static public <T> byte[] GetPrinterData(Context context, String area, String[] contents, List<T> listSfmx){
+    static public <T> byte[] GetPrinterData(Context context, String area, String[] contents, List<T> listSfmx, String... selectType){
         byte[] printData = null;
 
         try{
@@ -56,10 +57,15 @@ public class FpmbParse {
                             //获取子节点
                             NodeList childs = fpmb.getChildNodes();
 
-                            List<Byte> listprintData = new ArrayList<>();
+                            List<Byte> listprintData = new ArrayList<Byte>();
                             //解析模板获取返回可打印字节链表
-                            while (listSfmx.size() > 0) {
-                                listprintData.addAll(ParseFPMB(childs, contents, listSfmx));
+                            if (listSfmx.size() > 0) {
+                                if (selectType == null || selectType.length == 0){
+                                    listprintData.addAll(ParseFPMB(childs, contents, listSfmx, "1", "2", "3", "4"));
+                                }
+                                else {
+                                    listprintData.addAll(ParseFPMB(childs, contents, listSfmx, selectType));
+                                }
                             }
 
                             //将链表数据转换为byte字节数组
@@ -81,7 +87,134 @@ public class FpmbParse {
         return printData;
     }
 
-    static protected void ParseType(int type, String XmlValue, String[] contents, Object object, List<Byte> printData) throws Exception{
+    /**
+     * 获取可以打印的最大项目行数
+     * @param context
+     * @param area
+     * @return
+     */
+    public static int GetMaxLine(Context context, String area){
+        int maxValue = -1;
+        try{
+            AssetManager am = context.getAssets();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            //解析XML模板内容
+            Document document = builder.parse(am.open("fpmb.xml"));
+            Element rootElement = document.getDocumentElement();
+            //获取根节点内容
+            NodeList items = rootElement.getElementsByTagName("fpmb");
+            for (int i = 0; i < items.getLength(); ++i){
+                Node fpmb = items.item(i);
+
+                if (fpmb.hasAttributes()){
+                    NamedNodeMap attribute = fpmb.getAttributes();
+                    //获取地区名字
+                    Node invoice = attribute.getNamedItem("InvoiceName");
+                    if (invoice != null){
+                        //寻找相应地区的模板
+                        if (invoice.getNodeValue().equals(area)){
+                            //获取子节点
+                            NodeList childs = fpmb.getChildNodes();
+
+                            maxValue = ParseFPMB(childs);
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return maxValue;
+    }
+
+    /**
+     * 获取可以打印的最大项目行数
+     * @param context
+     * @return
+     */
+    public static List<String> GetAllArea(Context context){
+        List<String> areas = new ArrayList<String>();
+        try{
+            AssetManager am = context.getAssets();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            //解析XML模板内容
+            Document document = builder.parse(am.open("fpmb.xml"));
+            Element rootElement = document.getDocumentElement();
+            //获取根节点内容
+            NodeList items = rootElement.getElementsByTagName("fpmb");
+            for (int i = 0; i < items.getLength(); ++i){
+                Node fpmb = items.item(i);
+
+                if (fpmb.hasAttributes()){
+                    NamedNodeMap attribute = fpmb.getAttributes();
+                    //获取地区名字
+                    Node invoice = attribute.getNamedItem("InvoiceName");
+                    if (invoice != null){
+                        //寻找相应地区的模板
+                        areas.add(invoice.getNodeValue());
+                    }
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return areas;
+    }
+
+    /**
+     * @brief 解析对应发票模板
+     * @param nodeList 发票模板的节点链表
+     * @return 返回可打印字节链表
+     */
+    static private int ParseFPMB(NodeList nodeList){
+        int maxValue = -1;
+        try {
+            //从链表的第一个节点开始解析
+            for (int i = 0; i < nodeList.getLength(); ++i) {
+                //获取第一个节点（获取的节点并非一定是第一个有效节点，注释节点也会被获取）
+                Node child = nodeList.item(i);
+                //判断当前结点是否有属性
+                if (child.hasAttributes()) {
+                    NamedNodeMap attributes = child.getAttributes();
+
+                    //判断是否有属性MAX
+                    Node max = attributes.getNamedItem("max");
+                    if (max != null) {
+                        //获取具备max属性节点的所有子节点
+                        NodeList subChilds = child.getChildNodes();
+
+                        //获取max属性的值并转换为Int类型
+                        maxValue = Integer.parseInt(max.getNodeValue().trim());
+
+                        //继续提取下一个节点
+                        break;
+                    }
+                }
+
+                //如果存在节点不符合上面两个定律，并且存在子节点，而且子节点的长度还大于0，则进行回掉方法
+                if (child.getChildNodes() != null && child.getChildNodes().getLength() > 0) {
+                    maxValue = ParseFPMB(child.getChildNodes());
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        //返回可打印聊表
+        return maxValue;
+    }
+
+
+    static protected void ParseType(int type, String XmlValue, String[] contents, Object object, List<Byte> printData) throws Exception {
         XmlValue = XmlValue.replaceAll("\r|\n|\t", "");
         switch (type) {
             case 1:{
@@ -105,7 +238,7 @@ public class FpmbParse {
                 String[] commands = XmlValue.split(" ");
                 for (int j = 0; j < commands.length; ++j) {
                     if (commands[j].trim().length() > 1) {
-                        byte command = (byte)Integer.parseInt(commands[j].trim().toLowerCase(), 16);
+                        byte command = (byte) Integer.parseInt(commands[j].trim().toLowerCase(), 16);
                         printData.add(command);
                     }
                 }
@@ -138,8 +271,8 @@ public class FpmbParse {
      * @param listSfmx 打印项目链表
      * @return 返回可打印字节链表
      */
-    static public <T> List<Byte> ParseFPMB(NodeList nodeList, String[] contents, List<T> listSfmx){
-        List<Byte> printData = new ArrayList<>();
+    static private <T> List<Byte> ParseFPMB(NodeList nodeList, String[] contents, List<T> listSfmx, String... selectType){
+        List<Byte> printData = new ArrayList<Byte>();
         Object object = null;
         try {
             //从链表的第一个节点开始解析
@@ -158,51 +291,18 @@ public class FpmbParse {
 
                         try {
                             //使用通用解析函数进行当前结点的解析
-                            ParseType(Integer.parseInt(type.getNodeValue()), value, contents, object, printData);
+                            for (int selectIndex = 0; selectIndex < selectType.length; ++selectIndex) {
+                                if (Integer.parseInt(type.getNodeValue()) == Integer.parseInt(selectType[selectIndex])) {
+                                    ParseType(Integer.parseInt(type.getNodeValue()), value, contents, object, printData);
+                                    break;
+                                }
+                            }
                         }
                         catch (Exception e){
                             e.printStackTrace();
                         }
 
                         continue;
-//                        switch (Integer.parseInt(type.getNodeValue())) {
-//                            case 1:{
-//                                byte[] byteContent = value.getBytes("gb18030");
-//                                for (int j = 0; j < byteContent.length; ++j){
-//                                    printData.add(byteContent[j]);
-//                                }
-//                            }
-//                                break;
-//
-//                            case 2: {
-//                                String content = contents[Integer.parseInt(value)];
-//                                byte[] byteContent = content.getBytes("gb18030");
-//                                for (int j = 0; j < byteContent.length; ++j){
-//                                    printData.add(byteContent[j]);
-//                                }
-//                            }
-//                            break;
-//
-//                            case 3: {
-//                                String[] commands = value.split(" ");
-//                                for (int j = 0; j < commands.length; ++j) {
-//                                    byte command = Byte.parseByte(commands[j].trim(), 16);
-//                                    printData.add(command);
-//                                }
-//                            }
-//                            break;
-//
-//                            case 4: {
-//                                Object result = callMethod(value, object, null);
-//                                if (result != null && result instanceof String){
-//                                    byte[] byteContent = ((String)result).getBytes("gb18030");
-//                                    for (int n = 0; n < byteContent.length; ++n){
-//                                        printData.add(byteContent[n]);
-//                                    }
-//                                }
-//                            }
-//                            break;
-//                        }
                     }
 
                     //判断是否有属性MAX
@@ -217,14 +317,15 @@ public class FpmbParse {
                         //循环判断，条件是不得超过预设值的最大值以及可打印链表的最大尺寸
                         int enter = 0;
                         int j = 0;
-                        for (; enter < maxValue && j < listSfmx.size(); ++j) {
+                        boolean bLoop = true;
+                        for (; enter < maxValue && j < listSfmx.size() && bLoop; ++j) {
                             //获取第一个可打印链表的对象
                             object = listSfmx.get(j);
 
                             //声明存储当前可打印项目行的Pair链表
                             //Pair first:表示打印的内容类型
                             //Pair secong:表示打印的内容
-                            List<Pair<Integer, String>> printString = new ArrayList<>();
+                            List<Pair<Integer, String>> printString = new ArrayList<Pair<Integer, String>>();
                             //开始循环获取项目模板
                             for (int m = 0; m < subChilds.getLength(); ++m) {
                                 //获取当前结点
@@ -239,32 +340,37 @@ public class FpmbParse {
                                     //判断是否具备type属性
                                     if (subType != null) {
 //                                        ParseType(Integer.parseInt(subType.getNodeValue()), value, contents, object, printData);
-                                        switch (Integer.parseInt(subType.getNodeValue())) {
-                                            //如果是类型3，当前的模板节点是打印指令，存储在printString中
-                                            case 3: {
-//                                                String[] commands = value.split(" ");
-//                                                for (int n = 0; n < commands.length; ++n) {
-//                                                    byte command = Byte.parseByte(commands[n].trim(), 16);
-//                                                    printData.add(command);
-//                                                }
-                                                printString.add(new Pair<Integer, String>(3, value));
-                                            }
-                                            break;
+                                        for (int selectIndex = 0; selectIndex < selectType.length; ++selectIndex) {
+                                            if (Integer.parseInt(subType.getNodeValue()) == Integer.parseInt(selectType[selectIndex])) {
+                                                switch (Integer.parseInt(subType.getNodeValue())) {
+                                                    //如果是类型3，当前的模板节点是打印指令，存储在printString中
+                                                    case 3: {
+        //                                                String[] commands = value.split(" ");
+        //                                                for (int n = 0; n < commands.length; ++n) {
+        //                                                    byte command = Byte.parseByte(commands[n].trim(), 16);
+        //                                                    printData.add(command);
+        //                                                }
+                                                        printString.add(new Pair<Integer, String>(3, value));
+                                                    }
+                                                    break;
 
-                                            //如果是类型4，表示当前的模板节点是从object对应方法中获取可打印数据
-                                            case 4: {
-                                                //调用相应的方法获取可打印结果
-                                                Object result = callMethod(value, object, null);
-                                                //如果获取的结果不为空并且是字符串将其存储在printString中
-                                                if (result != null && result instanceof String) {
-//                                                    byte[] byteContent = ((String)result).getBytes("gb18030");
-//                                                    for (int n = 0; n < byteContent.length; ++n){
-//                                                        printData.add(byteContent[n]);
-//                                                    }
-                                                    printString.add(new Pair<Integer, String>(4, (String) result));
+                                                    //如果是类型4，表示当前的模板节点是从object对应方法中获取可打印数据
+                                                    case 4: {
+                                                        //调用相应的方法获取可打印结果
+                                                        Object result = callMethod(value, object, null);
+                                                        //如果获取的结果不为空并且是字符串将其存储在printString中
+                                                        if (result != null && result instanceof String) {
+        //                                                    byte[] byteContent = ((String)result).getBytes("gb18030");
+        //                                                    for (int n = 0; n < byteContent.length; ++n){
+        //                                                        printData.add(byteContent[n]);
+        //                                                    }
+                                                            printString.add(new Pair<Integer, String>(4, (String) result));
+                                                        }
+                                                    }
+                                                    break;
                                                 }
+                                                break;
                                             }
-                                            break;
                                         }
                                     }
                                 }
@@ -272,6 +378,8 @@ public class FpmbParse {
 
                             //设置当前可打印行是否完成标识并初始化为false
                             boolean bcomplete = false;
+                            int currentSize = printData.size();
+                            int currentEnter = enter;
                             do {
 //                                String regex = "[\u4e00-\u9fa5]";
 //                                Pattern pattern = Pattern.compile(regex);
@@ -400,13 +508,22 @@ public class FpmbParse {
                                 for (Pair<Integer, String> pair : printString) {
                                     if (pair.first == 4) {
                                         bcomplete = true;
+                                        if ((maxValue - enter) <= 0){
+                                            for (int rmindex = currentSize, rmCount = printData.size() - currentSize, count = 0; count < rmCount; ++count){
+                                                printData.remove(currentSize);
+                                            }
+
+                                            enter = currentEnter;
+                                            --j;
+                                            bcomplete = false;
+                                            bLoop = false;
+                                        }
+
                                         break;
                                     }
                                 }
 
                             } while (bcomplete);
-
-
                         }
 
                         //如果存在空白行，需要添加换行符填充
@@ -427,7 +544,7 @@ public class FpmbParse {
 
                 //如果存在节点不符合上面两个定律，并且存在子节点，而且子节点的长度还大于0，则进行回掉方法
                 if (child.getChildNodes() != null && child.getChildNodes().getLength() > 0) {
-                    printData.addAll(ParseFPMB(child.getChildNodes(), contents, listSfmx));
+                    printData.addAll(ParseFPMB(child.getChildNodes(), contents, listSfmx, selectType));
                 }
             }
         }

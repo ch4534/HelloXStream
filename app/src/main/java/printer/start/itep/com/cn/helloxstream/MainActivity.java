@@ -71,14 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 List<Sfmx> list = new ArrayList<>();
-                Sfmx sfmx = new Sfmx();
-                sfmx.setDj("11");
-                sfmx.setXm("这是测试。Test,这是测试,这是测试。Test,这是测试");
-                sfmx.setJe("22");
-                sfmx.setSl("33");
-
-                list.add(sfmx);
-                for (int i = 0; i < 10; ++i){
+                for (int i = 0; i < 7; ++i){
                     Sfmx sfmx1 = new Sfmx();
                     sfmx1.setDj("11");
                     sfmx1.setXm("这是测试。");
@@ -88,7 +81,15 @@ public class MainActivity extends AppCompatActivity {
                     list.add(sfmx1);
                 }
 
-                byte[] printData = FpmbParse.GetPrinterData(MainActivity.this, "广西", contents, list);
+                Sfmx sfmx = new Sfmx();
+                sfmx.setDj("11");
+                sfmx.setXm("这是测试。Test,这是测试,这是测试。Test,这是测试");
+                sfmx.setJe("22");
+                sfmx.setSl("33");
+
+                list.add(sfmx);
+
+                byte[] printData = FpmbParse.GetPrinterData(MainActivity.this, "通用", contents, list);
                 File file = new File("/storage/sdcard0/printData.prn");
                 try {
                     OutputStream outputStream = new FileOutputStream(file);
