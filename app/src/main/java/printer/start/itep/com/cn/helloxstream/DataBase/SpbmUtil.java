@@ -20,8 +20,17 @@ public class SpbmUtil {
             List<BMXX> childList = dbManager.queryBMXX(new String[]{"PID"}, new String[]{i + "000000000000000000"});
             for (int j = 0; j < childList.size(); ++j){
                 BMXX bmxx = childList.get(j);
+                BMXX child = dbManager.queryOneBMXX("PID", bmxx.SPBM);
                 if (dbManager.IsExist(SPBMDBHelper.BMXX_TABLE_NAME, "PID", bmxx.SPBM)){
-                    getAllBmxxNode(dbManager, bmxxList, dbManager.queryBMXX(new String[]{"PID"}, new String[]{bmxx.SPBM}));
+                    if (bmxx.SPBM.length() / 2 != 0 && child.SPBM.length() / 2 == 0){
+                        bmxxList.add(bmxx);
+                    }
+                    else if (bmxx.SPBM.length() / 2 == 0 && child.SPBM.length() / 2 == 0){
+                        bmxxList.add(bmxx);
+                    }
+                    else {
+                        getAllBmxxNode(dbManager, bmxxList, dbManager.queryBMXX(new String[]{"PID"}, new String[]{bmxx.SPBM}));
+                    }
                 }
                 else{
                     bmxxList.add(bmxx);
@@ -35,8 +44,17 @@ public class SpbmUtil {
     private void getAllBmxxNode(DBManager dbManager, List<BMXX> bmxxList, List<BMXX> childList){
         for (int j = 0; j < childList.size(); ++j){
             BMXX bmxx = childList.get(j);
-            if (dbManager.IsExist(SPBMDBHelper.BMXX_TABLE_NAME, "PID", bmxx.SPBM) && bmxx.SPBM.length() / 2 != 0){
-                getAllBmxxNode(dbManager, bmxxList, dbManager.queryBMXX(new String[]{"PID"}, new String[]{bmxx.SPBM}));
+            BMXX child = dbManager.queryOneBMXX("PID", bmxx.SPBM);
+            if (dbManager.IsExist(SPBMDBHelper.BMXX_TABLE_NAME, "PID", bmxx.SPBM)){
+                if (bmxx.SPBM.length() / 2 != 0 && child.SPBM.length() / 2 == 0){
+                    bmxxList.add(bmxx);
+                }
+                else if (bmxx.SPBM.length() / 2 == 0 && child.SPBM.length() / 2 == 0){
+                    bmxxList.add(bmxx);
+                }
+                else {
+                    getAllBmxxNode(dbManager, bmxxList, dbManager.queryBMXX(new String[]{"PID"}, new String[]{bmxx.SPBM}));
+                }
             }
             else{
                 bmxxList.add(bmxx);

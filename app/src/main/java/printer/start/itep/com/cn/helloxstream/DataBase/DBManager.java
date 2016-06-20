@@ -210,13 +210,23 @@ public class DBManager {
         }
     }
 
-    public void DelCusBMXX(String spbm){
-        mDatabase.delete(mHelper.CUS_BMXX_TABLE_NAME, "SPBM = ?", new String[]{spbm});
+    public void RmCusBMXXList(List<BMXX> bmxxList){
+        for (BMXX bmxx : bmxxList){
+            DelCusBMXX(bmxx.ZXBM);
+        }
     }
 
-    public void DelCusBMXXList(List<String> spbmlist){
-        for (String spbm : spbmlist){
-            DelCusBMXX(spbm);
+    public void DelCusBMXX(String zxbm){
+        mDatabase.delete(mHelper.CUS_BMXX_TABLE_NAME, "ZXBM = ?", new String[]{zxbm});
+        if (this.IsExist(SPBMDBHelper.CUS_BMXX_TABLE_NAME, "PID", zxbm)){
+            List<BMXX> bmxxList = this.queryCusBMXX(new String[]{"PID"}, new String[]{zxbm});
+            RmCusBMXXList(bmxxList);
+        }
+    }
+
+    public void DelCusBMXXList(List<String> zxbmlist){
+        for (String zxbm : zxbmlist){
+            DelCusBMXX(zxbm);
         }
     }
 
@@ -252,8 +262,45 @@ public class DBManager {
         return bmxxList;
     }
 
+    public List<BMXX> queryCusBMXX(){
+        List<BMXX> bmxxList = new ArrayList<>();
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + SPBMDBHelper.CUS_BMXX_TABLE_NAME + " ORDER BY ZXBM ASC", null);
+        while (cursor.moveToNext()){
+            BMXX bmxx = new BMXX();
+            bmxx.BB = cursor.getString(cursor.getColumnIndex("BB"));
+            bmxx.QYSJ = cursor.getString(cursor.getColumnIndex("QYSJ"));
+            bmxx.GDQJZSJ = cursor.getString(cursor.getColumnIndex("GDQJZSJ"));
+            bmxx.SPBM = cursor.getString(cursor.getColumnIndex("SPBM"));
+            bmxx.SPMC = cursor.getString(cursor.getColumnIndex("SPMC"));
+            bmxx.SM = cursor.getString(cursor.getColumnIndex("SM"));
+            bmxx.ZZSSL = cursor.getString(cursor.getColumnIndex("ZZSSL"));
+            bmxx.GJZ = cursor.getString(cursor.getColumnIndex("GJZ"));
+            bmxx.HZX = cursor.getString(cursor.getColumnIndex("HZX"));
+            bmxx.KYZT = cursor.getString(cursor.getColumnIndex("KYZT"));
+            bmxx.ZZSTSGL = cursor.getString(cursor.getColumnIndex("ZZSTSGL"));
+            bmxx.ZZSZCYJ = cursor.getString(cursor.getColumnIndex("ZZSZCYJ"));
+            bmxx.ZZSTSNRDM = cursor.getString(cursor.getColumnIndex("ZZSTSNRDM"));
+            bmxx.XFSGL = cursor.getString(cursor.getColumnIndex("XFSGL"));
+            bmxx.XFSZCYJ = cursor.getString(cursor.getColumnIndex("XFSZCYJ"));
+            bmxx.XFSTSNRDM = cursor.getString(cursor.getColumnIndex("XFSTSNRDM"));
+            bmxx.TJJBM = cursor.getString(cursor.getColumnIndex("TJJBM"));
+            bmxx.HGJCKSPPM = cursor.getString(cursor.getColumnIndex("HGJCKSPPM"));
+            bmxx.PID = cursor.getString(cursor.getColumnIndex("PID"));
+            bmxx.GXSJ = cursor.getString(cursor.getColumnIndex("GXSJ"));
+            bmxx.ZXBM = cursor.getString(cursor.getColumnIndex("ZXBM"));
+            bmxxList.add(bmxx);
+        }
+
+        cursor.close();
+        return bmxxList;
+    }
+
     public List<BMXX> queryBMXX(String[] keys, String[] values){
         return queryBMXX(keys, values, false);
+    }
+
+    public List<BMXX> queryCusBMXX(String[] keys, String[] values){
+        return queryCusBMXX(keys, values, false);
     }
 
     public List<BMXX> queryBMXX(String[] keys, String[] values, boolean bASC){
@@ -310,6 +357,126 @@ public class DBManager {
         return bmxxList;
     }
 
+    public List<BMXX> queryCusBMXX(String[] keys, String[] values, boolean bASC){
+        List<BMXX> bmxxList = new ArrayList<>();
+        String sql = "SELECT * FROM " + SPBMDBHelper.CUS_BMXX_TABLE_NAME;
+        if (keys.length > 0 && values.length > 0){
+            int count = keys.length > values.length ? values.length : keys.length;
+
+            sql += " WHERE ";
+            for (int i = 0; i < count; ++i){
+                if (i == 0) {
+                    sql += keys[i] + "=" + values[i];
+                }
+                else{
+                    sql += " AND " + keys[i] + "=" + values[i];
+                }
+            }
+        }
+
+        if (bASC){
+            sql += " ORDER BY SPBM ASC";
+        }
+        else {
+            sql += " ORDER BY SPBM DESC";
+        }
+
+        Cursor cursor = mDatabase.rawQuery(sql, null);
+        while (cursor.moveToNext()){
+            BMXX bmxx = new BMXX();
+            bmxx.BB = cursor.getString(cursor.getColumnIndex("BB"));
+            bmxx.QYSJ = cursor.getString(cursor.getColumnIndex("QYSJ"));
+            bmxx.GDQJZSJ = cursor.getString(cursor.getColumnIndex("GDQJZSJ"));
+            bmxx.SPBM = cursor.getString(cursor.getColumnIndex("SPBM"));
+            bmxx.SPMC = cursor.getString(cursor.getColumnIndex("SPMC"));
+            bmxx.SM = cursor.getString(cursor.getColumnIndex("SM"));
+            bmxx.ZZSSL = cursor.getString(cursor.getColumnIndex("ZZSSL"));
+            bmxx.GJZ = cursor.getString(cursor.getColumnIndex("GJZ"));
+            bmxx.HZX = cursor.getString(cursor.getColumnIndex("HZX"));
+            bmxx.KYZT = cursor.getString(cursor.getColumnIndex("KYZT"));
+            bmxx.ZZSTSGL = cursor.getString(cursor.getColumnIndex("ZZSTSGL"));
+            bmxx.ZZSZCYJ = cursor.getString(cursor.getColumnIndex("ZZSZCYJ"));
+            bmxx.ZZSTSNRDM = cursor.getString(cursor.getColumnIndex("ZZSTSNRDM"));
+            bmxx.XFSGL = cursor.getString(cursor.getColumnIndex("XFSGL"));
+            bmxx.XFSZCYJ = cursor.getString(cursor.getColumnIndex("XFSZCYJ"));
+            bmxx.XFSTSNRDM = cursor.getString(cursor.getColumnIndex("XFSTSNRDM"));
+            bmxx.TJJBM = cursor.getString(cursor.getColumnIndex("TJJBM"));
+            bmxx.HGJCKSPPM = cursor.getString(cursor.getColumnIndex("HGJCKSPPM"));
+            bmxx.PID = cursor.getString(cursor.getColumnIndex("PID"));
+            bmxx.GXSJ = cursor.getString(cursor.getColumnIndex("GXSJ"));
+            bmxx.ZXBM = cursor.getString(cursor.getColumnIndex("ZXBM"));
+            bmxxList.add(bmxx);
+        }
+
+        cursor.close();
+        return bmxxList;
+    }
+
+    public BMXX queryOneBMXX(String key, String value){
+        String sql = "SELECT * FROM " + SPBMDBHelper.BMXX_TABLE_NAME + " WHERE " + key + "= " + value + " limit 1";
+        Cursor cursor = mDatabase.rawQuery(sql, null);
+        if (cursor.moveToNext()){
+            BMXX bmxx = new BMXX();
+            bmxx.BB = cursor.getString(cursor.getColumnIndex("BB"));
+            bmxx.QYSJ = cursor.getString(cursor.getColumnIndex("QYSJ"));
+            bmxx.GDQJZSJ = cursor.getString(cursor.getColumnIndex("GDQJZSJ"));
+            bmxx.SPBM = cursor.getString(cursor.getColumnIndex("SPBM"));
+            bmxx.SPMC = cursor.getString(cursor.getColumnIndex("SPMC"));
+            bmxx.SM = cursor.getString(cursor.getColumnIndex("SM"));
+            bmxx.ZZSSL = cursor.getString(cursor.getColumnIndex("ZZSSL"));
+            bmxx.GJZ = cursor.getString(cursor.getColumnIndex("GJZ"));
+            bmxx.HZX = cursor.getString(cursor.getColumnIndex("HZX"));
+            bmxx.KYZT = cursor.getString(cursor.getColumnIndex("KYZT"));
+            bmxx.ZZSTSGL = cursor.getString(cursor.getColumnIndex("ZZSTSGL"));
+            bmxx.ZZSZCYJ = cursor.getString(cursor.getColumnIndex("ZZSZCYJ"));
+            bmxx.ZZSTSNRDM = cursor.getString(cursor.getColumnIndex("ZZSTSNRDM"));
+            bmxx.XFSGL = cursor.getString(cursor.getColumnIndex("XFSGL"));
+            bmxx.XFSZCYJ = cursor.getString(cursor.getColumnIndex("XFSZCYJ"));
+            bmxx.XFSTSNRDM = cursor.getString(cursor.getColumnIndex("XFSTSNRDM"));
+            bmxx.TJJBM = cursor.getString(cursor.getColumnIndex("TJJBM"));
+            bmxx.HGJCKSPPM = cursor.getString(cursor.getColumnIndex("HGJCKSPPM"));
+            bmxx.PID = cursor.getString(cursor.getColumnIndex("PID"));
+            bmxx.GXSJ = cursor.getString(cursor.getColumnIndex("GXSJ"));
+            return bmxx;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public BMXX queryOneCusBMXX(String key, String value){
+        String sql = "SELECT * FROM " + SPBMDBHelper.CUS_BMXX_TABLE_NAME + " WHERE " + key + "= " + value + " limit 1";
+        Cursor cursor = mDatabase.rawQuery(sql, null);
+        if (cursor.moveToNext()){
+            BMXX bmxx = new BMXX();
+            bmxx.BB = cursor.getString(cursor.getColumnIndex("BB"));
+            bmxx.QYSJ = cursor.getString(cursor.getColumnIndex("QYSJ"));
+            bmxx.GDQJZSJ = cursor.getString(cursor.getColumnIndex("GDQJZSJ"));
+            bmxx.SPBM = cursor.getString(cursor.getColumnIndex("SPBM"));
+            bmxx.SPMC = cursor.getString(cursor.getColumnIndex("SPMC"));
+            bmxx.SM = cursor.getString(cursor.getColumnIndex("SM"));
+            bmxx.ZZSSL = cursor.getString(cursor.getColumnIndex("ZZSSL"));
+            bmxx.GJZ = cursor.getString(cursor.getColumnIndex("GJZ"));
+            bmxx.HZX = cursor.getString(cursor.getColumnIndex("HZX"));
+            bmxx.KYZT = cursor.getString(cursor.getColumnIndex("KYZT"));
+            bmxx.ZZSTSGL = cursor.getString(cursor.getColumnIndex("ZZSTSGL"));
+            bmxx.ZZSZCYJ = cursor.getString(cursor.getColumnIndex("ZZSZCYJ"));
+            bmxx.ZZSTSNRDM = cursor.getString(cursor.getColumnIndex("ZZSTSNRDM"));
+            bmxx.XFSGL = cursor.getString(cursor.getColumnIndex("XFSGL"));
+            bmxx.XFSZCYJ = cursor.getString(cursor.getColumnIndex("XFSZCYJ"));
+            bmxx.XFSTSNRDM = cursor.getString(cursor.getColumnIndex("XFSTSNRDM"));
+            bmxx.TJJBM = cursor.getString(cursor.getColumnIndex("TJJBM"));
+            bmxx.HGJCKSPPM = cursor.getString(cursor.getColumnIndex("HGJCKSPPM"));
+            bmxx.PID = cursor.getString(cursor.getColumnIndex("PID"));
+            bmxx.GXSJ = cursor.getString(cursor.getColumnIndex("GXSJ"));
+            bmxx.ZXBM = cursor.getString(cursor.getColumnIndex("ZXBM"));
+            return bmxx;
+        }
+        else {
+            return null;
+        }
+    }
+
     public List<BMXX> queryBMXX(String likeSPBM){
         List<BMXX> bmxxList = new ArrayList<>();
         Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + SPBMDBHelper.BMXX_TABLE_NAME + " WHERE SPBM like '" + likeSPBM + "%' ORDER BY SPBM ASC", null);
@@ -335,6 +502,39 @@ public class DBManager {
             bmxx.HGJCKSPPM = cursor.getString(cursor.getColumnIndex("HGJCKSPPM"));
             bmxx.PID = cursor.getString(cursor.getColumnIndex("PID"));
             bmxx.GXSJ = cursor.getString(cursor.getColumnIndex("GXSJ"));
+            bmxxList.add(bmxx);
+        }
+
+        cursor.close();
+        return bmxxList;
+    }
+
+    public List<BMXX> queryCusBMXX(String likeZXBM){
+        List<BMXX> bmxxList = new ArrayList<>();
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + SPBMDBHelper.CUS_BMXX_TABLE_NAME + " WHERE ZXBM like '" + likeZXBM + "%' ORDER BY ZXBM ASC", null);
+        while (cursor.moveToNext()){
+            BMXX bmxx = new BMXX();
+            bmxx.BB = cursor.getString(cursor.getColumnIndex("BB"));
+            bmxx.QYSJ = cursor.getString(cursor.getColumnIndex("QYSJ"));
+            bmxx.GDQJZSJ = cursor.getString(cursor.getColumnIndex("GDQJZSJ"));
+            bmxx.SPBM = cursor.getString(cursor.getColumnIndex("SPBM"));
+            bmxx.SPMC = cursor.getString(cursor.getColumnIndex("SPMC"));
+            bmxx.SM = cursor.getString(cursor.getColumnIndex("SM"));
+            bmxx.ZZSSL = cursor.getString(cursor.getColumnIndex("ZZSSL"));
+            bmxx.GJZ = cursor.getString(cursor.getColumnIndex("GJZ"));
+            bmxx.HZX = cursor.getString(cursor.getColumnIndex("HZX"));
+            bmxx.KYZT = cursor.getString(cursor.getColumnIndex("KYZT"));
+            bmxx.ZZSTSGL = cursor.getString(cursor.getColumnIndex("ZZSTSGL"));
+            bmxx.ZZSZCYJ = cursor.getString(cursor.getColumnIndex("ZZSZCYJ"));
+            bmxx.ZZSTSNRDM = cursor.getString(cursor.getColumnIndex("ZZSTSNRDM"));
+            bmxx.XFSGL = cursor.getString(cursor.getColumnIndex("XFSGL"));
+            bmxx.XFSZCYJ = cursor.getString(cursor.getColumnIndex("XFSZCYJ"));
+            bmxx.XFSTSNRDM = cursor.getString(cursor.getColumnIndex("XFSTSNRDM"));
+            bmxx.TJJBM = cursor.getString(cursor.getColumnIndex("TJJBM"));
+            bmxx.HGJCKSPPM = cursor.getString(cursor.getColumnIndex("HGJCKSPPM"));
+            bmxx.PID = cursor.getString(cursor.getColumnIndex("PID"));
+            bmxx.GXSJ = cursor.getString(cursor.getColumnIndex("GXSJ"));
+            bmxx.ZXBM = cursor.getString(cursor.getColumnIndex("ZXBM"));
             bmxxList.add(bmxx);
         }
 

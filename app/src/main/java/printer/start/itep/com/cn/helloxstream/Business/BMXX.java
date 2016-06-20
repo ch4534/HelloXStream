@@ -36,5 +36,6 @@ public class BMXX {
     public String TJJBM;
     public String HGJCKSPPM;
     public String GXSJ;
+    public String ZXBM;
     public List<BMXX> childers = new ArrayList<>();
 }
