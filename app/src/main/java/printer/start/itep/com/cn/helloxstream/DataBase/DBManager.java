@@ -182,8 +182,18 @@ public class DBManager {
         }
     }
 
+    public void RmBMXXList(List<BMXX> bmxxList){
+        for (BMXX bmxx : bmxxList){
+            DelBMXX(bmxx.SPBM);
+        }
+    }
+
     public void DelBMXX(String spbm){
         mDatabase.delete(mHelper.BMXX_TABLE_NAME, "SPBM = ?", new String[]{spbm});
+        if (this.IsExist(SPBMDBHelper.BMXX_TABLE_NAME, "PID", spbm)){
+            List<BMXX> bmxxList = this.queryBMXX(new String[]{"PID"}, new String[]{spbm});
+            RmBMXXList(bmxxList);
+        }
     }
 
     public void DelBMXXList(List<String> spbmlist){
