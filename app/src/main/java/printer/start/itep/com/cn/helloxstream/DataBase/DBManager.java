@@ -19,10 +19,18 @@ public class DBManager {
 
     private SPBMDBHelper mHelper;
     private SQLiteDatabase mDatabase;
+    private static DBManager mInstance = null;
 
-    public DBManager(Context context){
+    private DBManager(Context context){
         mHelper = new SPBMDBHelper(context);
         mDatabase = mHelper.getWritableDatabase();
+    }
+
+    public static DBManager getInstance(Context context){
+        if (mInstance == null){
+            mInstance = new DBManager(context.getApplicationContext());
+        }
+        return mInstance;
     }
 
     public void AddBMXX(BMXX bmxx){
